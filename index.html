@@ -108,7 +108,7 @@
       <button onclick="inputNum('4')">4</button>
       <button onclick="inputNum('5')">5</button>
       <button onclick="inputNum('6')">6</button>
-      <button style="visibility:hidden"></button>
+      <button class="btn-operator" id="op-*" onclick="setOperator('*')">×</button>
 
       <!-- Row 4 -->
       <button onclick="inputNum('1')">1</button>
@@ -178,6 +178,7 @@
     function compute(a, b, op) {
       if (op === '+') return a + b;
       if (op === '-') return a - b;
+      if (op === '*') return a * b;
       return b;
     }
 
@@ -193,14 +194,14 @@
       operator = op;
       freshInput = true;
       highlightOperator(op);
-      expressionEl.textContent = firstNumber + ' ' + (op === '-' ? '−' : op);
+      expressionEl.textContent = firstNumber + ' ' + (op === '-' ? '−' : op === '*' ? '×' : op);
     }
 
     function calculate() {
       if (firstNumber === null || operator === null) return;
       const a = parseFloat(firstNumber);
       const b = parseFloat(current);
-      const symbol = operator === '-' ? '−' : operator;
+      const symbol = operator === '-' ? '−' : operator === '*' ? '×' : operator;
       expressionEl.textContent = firstNumber + ' ' + symbol + ' ' + current + ' =';
       const result = compute(a, b, operator);
       current = String(result);
@@ -227,6 +228,7 @@
       else if (e.key === '.') inputNum('.');
       else if (e.key === '+') setOperator('+');
       else if (e.key === '-') setOperator('-');
+      else if (e.key === '*') setOperator('*');
       else if (e.key === 'Enter' || e.key === '=') calculate();
       else if (e.key === 'Escape') clearAll();
       else if (e.key === 'Backspace') {
