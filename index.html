@@ -81,6 +81,9 @@
     .btn-equals:hover { background: #2b6cb0; }
 
     .btn-zero { grid-column: span 2; }
+
+    .btn-special { background: #0f3460; color: #9f7aea; font-size: 15px; }
+    .btn-special:hover { background: #1a4a7a; }
   </style>
 </head>
 <body>
@@ -117,7 +120,8 @@
       <button class="btn-operator" id="op-+" onclick="setOperator('+')">+</button>
 
       <!-- Row 5 -->
-      <button class="btn-zero" onclick="inputNum('0')">0</button>
+      <button class="btn-special" onclick="squared()">x²</button>
+      <button onclick="inputNum('0')">0</button>
       <button onclick="inputNum('.')">.</button>
       <button class="btn-equals" onclick="calculate()">=</button>
     </div>
@@ -145,7 +149,6 @@
     }
 
     function inputNum(value) {
-      // Clear operator highlight once user starts typing next number
       if (freshInput) highlightOperator(null);
 
       if (value === '.') {
@@ -176,9 +179,18 @@
       updateDisplay();
     }
 
+    function squared() {
+      const n = parseFloat(current);
+      expressionEl.textContent = current + '² =';
+      current = String(n * n);
+      freshInput = true;
+      updateDisplay();
+    }
+
     function getSymbol(op) {
       return op === '-' ? '−' : op === '*' ? '×' : op === '/' ? '÷' : op;
     }
+
     function compute(a, b, op) {
       if (op === '+') return a + b;
       if (op === '-') return a - b;
