@@ -121,9 +121,12 @@
 
       <!-- Row 5 -->
       <button class="btn-special" onclick="squared()">x²</button>
+      <button class="btn-special" onclick="squareRoot()">√x</button>
+
+      <!-- Row 6 -->
       <button onclick="inputNum('0')">0</button>
       <button onclick="inputNum('.')">.</button>
-      <button class="btn-equals" onclick="calculate()">=</button>
+      <button class="btn-equals" onclick="calculate()" style="grid-column: span 2;">=</button>
     </div>
   </div>
 
@@ -183,6 +186,21 @@
       const n = parseFloat(current);
       expressionEl.textContent = current + '² =';
       current = String(n * n);
+      freshInput = true;
+      updateDisplay();
+    }
+
+    function squareRoot() {
+      const n = parseFloat(current);
+      if (n < 0) {
+        expressionEl.textContent = '√' + current + ' =';
+        current = 'Error';
+        freshInput = true;
+        resultEl.textContent = 'Error';
+        return;
+      }
+      expressionEl.textContent = '√' + current + ' =';
+      current = String(Math.sqrt(n));
       freshInput = true;
       updateDisplay();
     }
