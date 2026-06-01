@@ -96,29 +96,30 @@
       <button class="btn-clear" onclick="clearAll()">C</button>
       <button onclick="toggleSign()" style="color:#a0aec0; font-size:14px;">+/−</button>
       <button onclick="percent()" style="color:#a0aec0;">%</button>
-      <button class="btn-operator" id="op-+" onclick="setOperator('+')">+</button>
+      <button class="btn-operator" id="op-/" onclick="setOperator('/')">÷</button>
 
       <!-- Row 2 -->
       <button onclick="inputNum('7')">7</button>
       <button onclick="inputNum('8')">8</button>
       <button onclick="inputNum('9')">9</button>
-      <button class="btn-operator" id="op--" onclick="setOperator('-')">−</button>
+      <button class="btn-operator" id="op-*" onclick="setOperator('*')">×</button>
 
       <!-- Row 3 -->
       <button onclick="inputNum('4')">4</button>
       <button onclick="inputNum('5')">5</button>
       <button onclick="inputNum('6')">6</button>
-      <button class="btn-operator" id="op-*" onclick="setOperator('*')">×</button>
+      <button class="btn-operator" id="op--" onclick="setOperator('-')">−</button>
 
       <!-- Row 4 -->
       <button onclick="inputNum('1')">1</button>
       <button onclick="inputNum('2')">2</button>
       <button onclick="inputNum('3')">3</button>
-      <button class="btn-equals" onclick="calculate()" style="grid-row: span 2;">=</button>
+      <button class="btn-operator" id="op-+" onclick="setOperator('+')">+</button>
 
       <!-- Row 5 -->
       <button class="btn-zero" onclick="inputNum('0')">0</button>
       <button onclick="inputNum('.')">.</button>
+      <button class="btn-equals" onclick="calculate()">=</button>
     </div>
   </div>
 
@@ -175,10 +176,14 @@
       updateDisplay();
     }
 
+    function getSymbol(op) {
+      return op === '-' ? '−' : op === '*' ? '×' : op === '/' ? '÷' : op;
+    }
     function compute(a, b, op) {
       if (op === '+') return a + b;
       if (op === '-') return a - b;
       if (op === '*') return a * b;
+      if (op === '/') return b !== 0 ? a / b : 'Error';
       return b;
     }
 
@@ -194,22 +199,22 @@
       operator = op;
       freshInput = true;
       highlightOperator(op);
-      expressionEl.textContent = firstNumber + ' ' + (op === '-' ? '−' : op === '*' ? '×' : op);
+      expressionEl.textContent = firstNumber + ' ' + getSymbol(op);
     }
 
     function calculate() {
       if (firstNumber === null || operator === null) return;
       const a = parseFloat(firstNumber);
       const b = parseFloat(current);
-      const symbol = operator === '-' ? '−' : operator === '*' ? '×' : operator;
+      const symbol = getSymbol(operator);
       expressionEl.textContent = firstNumber + ' ' + symbol + ' ' + current + ' =';
       const result = compute(a, b, operator);
-      current = String(result);
+      current = result === 'Error' ? 'Error' : String(result);
       firstNumber = null;
       operator = null;
       freshInput = true;
       highlightOperator(null);
-      updateDisplay();
+      resultEl.textContent = current;
     }
 
     function clearAll() {
@@ -229,6 +234,7 @@
       else if (e.key === '+') setOperator('+');
       else if (e.key === '-') setOperator('-');
       else if (e.key === '*') setOperator('*');
+      else if (e.key === '/') { e.preventDefault(); setOperator('/'); }
       else if (e.key === 'Enter' || e.key === '=') calculate();
       else if (e.key === 'Escape') clearAll();
       else if (e.key === 'Backspace') {
